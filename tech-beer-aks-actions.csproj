@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>tech_beer_aks_actions</RootNamespace>
+  </PropertyGroup>
+
+
+</Project>
