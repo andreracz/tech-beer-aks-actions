@@ -24,3 +24,7 @@ jobs:
           login-server: ${{ secrets.CONTAINER_REGISTRY }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+        docker build . -t ${{ secrets.CONTAINER_REGISTRY }}/techbeeraksactions:$GITHUB_SHA
+        docker push ${{ secrets.CONTAINER_REGISTRY }}/techbeeraksactions:$GITHUB_SHA
+    
