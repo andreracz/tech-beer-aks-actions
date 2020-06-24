@@ -1,0 +1,50 @@
+# Default values for microservice.
+
+namespace: tech-beer
+replicaCount: 2
+
+image:
+  repository: 
+  tag: 
+  #image repo and tag set by CD pipeline
+  pullPolicy: IfNotPresent
+
+environment: development
+
+probes:
+  enabled: false
+  liveness: 
+    periodSeconds: 60
+    initialDelaySeconds: 30 
+    timeoutSeconds: 10
+  readiness:
+    periodSeconds: 60
+    initialDelaySeconds: 30 
+    timeoutSeconds: 10
+
+service:
+  enabled: true
+  type: LoadBalancer
+  httpPort: 80
+  externalPort: 80
+
+# metrics-server add-on required
+hpa:
+  enabled: false
+  maxReplicas: 10
+  # average total CPU usage per pod (1-100)
+  cpu:
+  # average memory usage per pod (100Mi-1Gi)
+  memory:
+  # average http requests per second per pod (k8s-prometheus-adapter)
+  requests:
+
+resources:
+  limits:
+    cpu: 400m
+    memory: 128Mi
+  requests:
+    cpu: 200m
+    memory: 64Mi
+
+

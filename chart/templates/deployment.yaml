@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ template "microservice.fullname" . }}
+  labels:
+    app: {{ template "microservice.name" . }}
+    chart: {{ template "microservice.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: {{ template "microservice.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "microservice.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.service.httpPort | default 3000 }}"
+    spec:
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        kubernetes.io/os: linux
+#      affinity:
+#        podAntiAffinity:
+#          preferredDuringSchedulingIgnoredDuringExecution:
+#          - labelSelector:
+#              matchExpressions:
+#              - key: app
+#                operator: In
+#                values:
+#                - {{ template "microservice.name" . }}
+#            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- if .Values.service.httpPort }}
+          - name: PORT
+            value: "{{ .Values.service.httpPort }}"
+          {{- end }}
+          {{- if .Values.environment }}
+          - name: ENVIRONMENT
+            value: {{ .Values.environment }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.httpPort | default 3000 }}
+              protocol: TCP
+          {{- if .Values.probes.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.httpPort | default 3000 }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds | default 60 }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 30 }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds | default 10 }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.httpPort | default 3000 }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 60 }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 30 }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds | default 10 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

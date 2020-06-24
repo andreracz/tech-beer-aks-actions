@@ -1,0 +1,9 @@
+apiVersion: v1
+version: 0.0.1
+appVersion: 0.0.1
+name: tech-beer-net
+engine: gotpl
+description: NodeJS Helm chart for Kubernetes
+maintainers:
+- email: andre.racz@avanade.com
+  name: Andre Racz

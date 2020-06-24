@@ -28,3 +28,29 @@ jobs:
         docker build . -t ${{ secrets.CONTAINER_REGISTRY }}/techbeeraksactions:$GITHUB_SHA
         docker push ${{ secrets.CONTAINER_REGISTRY }}/techbeeraksactions:$GITHUB_SHA
     
+    - uses: azure/aks-set-context@v1
+      with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: techbeeraks
+          resource-group: avanade-tech-beer
+
+    - name: Create namespace
+      run:  |
+          if [ -n "$(kubectl get namespace tech-beer --ignore-not-found -o name)" ]; then exit 0; fi
+          kubectl create namespace tech-beer          
+
+    - uses: azure/k8s-bake@v1
+      with:
+            renderEngine: 'helm2'
+            helmChart: './chart'
+            releaseName: todo-microservices
+            overrides: |
+              image.repository:${{ secrets.CONTAINER_REGISTRY }}/techbeeraksactions
+              image.tag:${{ github.sha }}
+      id: bake
+
+      # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+      with:
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          namespace: tech-beer
