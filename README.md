@@ -34,7 +34,7 @@ Para montar o ambiente, os seguinte comandos devem ser rodados no powershell, co
 6. Criar service principal: ```$servicePrincipal = az ad sp create-for-rbac --sdk-auth --skip-assignment```
 7. Converter o Service principal em objeto para uso nos proximos comandos: ```$sp = $servicePrincipal |ConvertFrom-Json```
 8. Atribuir o papel de Contributor para o Service Principal poder fazer deploy no AKS: ```az role assignment create --assignee $sp.clientId --scope /subscriptions/$subscription/resourcegroups/avanade-tech-beer/providers/Microsoft.ContainerService/managedClusters/techbeeraks --role Contributor```
-9. ```az role assignment create --assignee $sp.clientId  --scope /subscriptions/$subscription/resourceGroups/avanade-tech-beer/providers/Microsoft.ContainerRegistry/registries/$acrName --role AcrPush```
+9. Atribuir o papel de AcrPush para o Service Principal poder fazer Push do Container no ACR:  ```az role assignment create --assignee $sp.clientId  --scope /subscriptions/$subscription/resourceGroups/avanade-tech-beer/providers/Microsoft.ContainerRegistry/registries/$acrName --role AcrPush```
 10. Conectar com o AKS localmente: ```az aks get-credentials -g avanade-tech-beer --name techbeeraks```
 
 Cadastrar os secrets no Github
