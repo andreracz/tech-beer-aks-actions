@@ -10,10 +10,11 @@ Pré-Requisitos
 
 Para rodar este exemplo, é necessário:
 
-1. Ter o [Azure Cli](https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest) instalado
-2. Estar com o Azure cli logado na conta que deve ser utilizado e utilizando a subscription correta
-3. Ter o [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) instalado
-4. Recomendo a utilização do Visual Studio Code para codificação!
+1. Ter uma conta no Azure, com créditos disponíveis (a opção de [trial](https://azure.microsoft.com/pt-br/free/) gratuito funciona!)
+2. Ter o [Azure Cli](https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest) instalado
+3. Estar com o Azure cli logado na conta que deve ser utilizado e utilizando a subscription correta
+4. Ter o [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) instalado
+5. Recomendo a utilização do Visual Studio Code para codificação!
 
 Rodar no seu ambiente
 ---------------------
